@@ -1,0 +1,917 @@
+{
+  "householdName": "The Talents",
+  "timezone": "America/New_York",
+  "family": [
+    {
+      "id": "m1",
+      "name": "Alex",
+      "diet": [
+        "vegetarian"
+      ],
+      "favorites": [
+        "tofu-stir-fry",
+        "vegan-chili",
+        "coconut-black-beans"
+      ],
+      "allergies": [
+        "dairy"
+      ]
+    },
+    {
+      "id": "m2",
+      "name": "Sam",
+      "diet": [
+        "none"
+      ],
+      "favorites": [
+        "beef-tacos",
+        "garlic-butter-steak",
+        "lemon-garlic-salmon"
+      ],
+      "allergies": [
+        "peanuts"
+      ]
+    }
+  ],
+  "pantry": [
+    {
+      "id": "p1",
+      "name": "rice",
+      "category": "grains",
+      "quantity": 800,
+      "unit": "g"
+    },
+    {
+      "id": "p2",
+      "name": "penne",
+      "category": "grains",
+      "quantity": 400,
+      "unit": "g"
+    },
+    {
+      "id": "p3",
+      "name": "black beans",
+      "category": "canned",
+      "quantity": 3,
+      "unit": "cans"
+    },
+    {
+      "id": "p4",
+      "name": "kidney beans",
+      "category": "canned",
+      "quantity": 1,
+      "unit": "can"
+    },
+    {
+      "id": "p5",
+      "name": "crushed tomatoes",
+      "category": "canned",
+      "quantity": 1400,
+      "unit": "g"
+    },
+    {
+      "id": "p6",
+      "name": "olive oil",
+      "category": "pantry",
+      "quantity": 750,
+      "unit": "ml"
+    },
+    {
+      "id": "p7",
+      "name": "garlic",
+      "category": "produce",
+      "quantity": 6,
+      "unit": "cloves"
+    },
+    {
+      "id": "p8",
+      "name": "onion",
+      "category": "produce",
+      "quantity": 3,
+      "unit": ""
+    },
+    {
+      "id": "p9",
+      "name": "eggs",
+      "category": "dairy & eggs",
+      "quantity": 10,
+      "unit": ""
+    },
+    {
+      "id": "p10",
+      "name": "firm tofu",
+      "category": "protein",
+      "quantity": 400,
+      "unit": "g"
+    },
+    {
+      "id": "p11",
+      "name": "coconut milk",
+      "category": "canned",
+      "quantity": 2,
+      "unit": "cans"
+    },
+    {
+      "id": "p12",
+      "name": "broccoli",
+      "category": "produce",
+      "quantity": 300,
+      "unit": "g"
+    },
+    {
+      "id": "p13",
+      "name": "chicken breast",
+      "category": "protein",
+      "quantity": 600,
+      "unit": "g"
+    },
+    {
+      "id": "p14",
+      "name": "butter",
+      "category": "dairy & eggs",
+      "quantity": 250,
+      "unit": "g"
+    }
+  ],
+  "mealPlan": null,
+  "shoppingList": [
+    {
+      "id": "s1",
+      "name": "coffee beans",
+      "quantity": 500,
+      "unit": "g",
+      "category": "pantry",
+      "source": "manual",
+      "checked": false
+    },
+    {
+      "id": "s2",
+      "name": "dish soap",
+      "quantity": 1,
+      "unit": "bottle",
+      "category": "home",
+      "source": "manual",
+      "checked": false
+    }
+  ],
+  "recipes": [
+    {
+      "id": "tofu-stir-fry",
+      "name": "15-Minute Tofu & Veggie Stir-Fry",
+      "category": "dinner",
+      "tags": [
+        "quick",
+        "asian",
+        "high-protein"
+      ],
+      "diet": [
+        "vegan",
+        "vegetarian",
+        "gluten-free",
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 15,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "firm tofu",
+          "quantity": 400,
+          "unit": "g"
+        },
+        {
+          "name": "broccoli",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "red bell pepper",
+          "quantity": 2,
+          "unit": ""
+        },
+        {
+          "name": "soy sauce",
+          "quantity": 60,
+          "unit": "ml"
+        },
+        {
+          "name": "garlic",
+          "quantity": 3,
+          "unit": "cloves"
+        },
+        {
+          "name": "ginger",
+          "quantity": 1,
+          "unit": "tbsp"
+        },
+        {
+          "name": "sesame oil",
+          "quantity": 1,
+          "unit": "tbsp"
+        },
+        {
+          "name": "rice",
+          "quantity": 300,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Press and cube the tofu, then sear in a hot pan with sesame oil until golden.",
+        "Add broccoli and sliced bell pepper, stir-fry for 4 minutes.",
+        "Add minced garlic, ginger, and soy sauce; toss for 2 minutes.",
+        "Serve over steamed rice."
+      ]
+    },
+    {
+      "id": "vegan-chili",
+      "name": "One-Pot Vegan Chili",
+      "category": "dinner",
+      "tags": [
+        "batch-cook",
+        "comfort",
+        "high-protein"
+      ],
+      "diet": [
+        "vegan",
+        "vegetarian",
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 40,
+      "servings": 6,
+      "ingredients": [
+        {
+          "name": "black beans",
+          "quantity": 2,
+          "unit": "cans"
+        },
+        {
+          "name": "kidney beans",
+          "quantity": 1,
+          "unit": "can"
+        },
+        {
+          "name": "crushed tomatoes",
+          "quantity": 800,
+          "unit": "g"
+        },
+        {
+          "name": "onion",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "garlic",
+          "quantity": 4,
+          "unit": "cloves"
+        },
+        {
+          "name": "chili powder",
+          "quantity": 2,
+          "unit": "tbsp"
+        },
+        {
+          "name": "cumin",
+          "quantity": 1,
+          "unit": "tbsp"
+        },
+        {
+          "name": "bell pepper",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "olive oil",
+          "quantity": 2,
+          "unit": "tbsp"
+        }
+      ],
+      "steps": [
+        "Sauté onion, garlic, and bell pepper in olive oil for 5 minutes.",
+        "Add spices and toast for 1 minute.",
+        "Add beans and crushed tomatoes, simmer 25 minutes.",
+        "Season to taste and serve."
+      ]
+    },
+    {
+      "id": "lemon-garlic-salmon",
+      "name": "Creamy Lemon Garlic Salmon",
+      "category": "dinner",
+      "tags": [
+        "quick",
+        "keto-friendly",
+        "weeknight"
+      ],
+      "diet": [
+        "pescatarian",
+        "gluten-free",
+        "nut-free"
+      ],
+      "prepMinutes": 25,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "salmon fillets",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "heavy cream",
+          "quantity": 200,
+          "unit": "ml"
+        },
+        {
+          "name": "lemon",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "garlic",
+          "quantity": 3,
+          "unit": "cloves"
+        },
+        {
+          "name": "butter",
+          "quantity": 2,
+          "unit": "tbsp"
+        },
+        {
+          "name": "parsley",
+          "quantity": 1,
+          "unit": "bunch"
+        },
+        {
+          "name": "asparagus",
+          "quantity": 200,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Season salmon and sear skin-side down 4 minutes, flip 3 minutes.",
+        "Set salmon aside; in same pan, sauté garlic in butter.",
+        "Add cream and lemon juice, simmer until slightly thickened.",
+        "Return salmon, add asparagus, cook 4 minutes. Garnish with parsley."
+      ]
+    },
+    {
+      "id": "margherita-pasta-bake",
+      "name": "Margherita Pasta Bake",
+      "category": "dinner",
+      "tags": [
+        "comfort",
+        "family",
+        "oven"
+      ],
+      "diet": [
+        "vegetarian",
+        "nut-free"
+      ],
+      "prepMinutes": 35,
+      "servings": 5,
+      "ingredients": [
+        {
+          "name": "penne",
+          "quantity": 400,
+          "unit": "g"
+        },
+        {
+          "name": "mozzarella",
+          "quantity": 250,
+          "unit": "g"
+        },
+        {
+          "name": "crushed tomatoes",
+          "quantity": 700,
+          "unit": "g"
+        },
+        {
+          "name": "fresh basil",
+          "quantity": 1,
+          "unit": "bunch"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 2,
+          "unit": "tbsp"
+        },
+        {
+          "name": "garlic",
+          "quantity": 2,
+          "unit": "cloves"
+        }
+      ],
+      "steps": [
+        "Boil penne until al dente and drain.",
+        "Simmer crushed tomatoes with garlic and olive oil for 10 minutes.",
+        "Mix pasta with sauce, top with mozzarella.",
+        "Bake at 200°C for 12 minutes; finish with fresh basil."
+      ]
+    },
+    {
+      "id": "shakshuka",
+      "name": "Weeknight Shakshuka",
+      "category": "brunch",
+      "tags": [
+        "quick",
+        "one-pan",
+        "breakfast-for-dinner"
+      ],
+      "diet": [
+        "vegetarian",
+        "pescatarian",
+        "gluten-free",
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 30,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "eggs",
+          "quantity": 6,
+          "unit": ""
+        },
+        {
+          "name": "crushed tomatoes",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "onion",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "red bell pepper",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "cumin",
+          "quantity": 1,
+          "unit": "tsp"
+        },
+        {
+          "name": "paprika",
+          "quantity": 2,
+          "unit": "tsp"
+        },
+        {
+          "name": "feta",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 2,
+          "unit": "tbsp"
+        }
+      ],
+      "steps": [
+        "Sauté onion and pepper in olive oil until soft.",
+        "Add cumin, paprika, and tomatoes; simmer 10 minutes.",
+        "Make wells and crack in eggs; cover and cook 8 minutes.",
+        "Crumble feta over the top and serve with crusty bread."
+      ]
+    },
+    {
+      "id": "grilled-chicken-pitas",
+      "name": "Grilled Chicken Pitas",
+      "category": "dinner",
+      "tags": [
+        "quick",
+        "high-protein",
+        "summer"
+      ],
+      "diet": [
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 25,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "chicken breast",
+          "quantity": 600,
+          "unit": "g"
+        },
+        {
+          "name": "pita bread",
+          "quantity": 4,
+          "unit": ""
+        },
+        {
+          "name": "tzatziki",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "cucumber",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "tomato",
+          "quantity": 2,
+          "unit": ""
+        },
+        {
+          "name": "red onion",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "smoked paprika",
+          "quantity": 1,
+          "unit": "tsp"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 1,
+          "unit": "tbsp"
+        }
+      ],
+      "steps": [
+        "Season chicken with paprika, salt, and olive oil.",
+        "Grill 6 minutes per side until cooked through; rest 5 minutes.",
+        "Slice and stuff into warm pitas with tzatziki, cucumber, tomato, and onion."
+      ]
+    },
+    {
+      "id": "veggie-frittata",
+      "name": "Gluten-Free Veggie Frittata",
+      "category": "brunch",
+      "tags": [
+        "quick",
+        "high-protein"
+      ],
+      "diet": [
+        "vegetarian",
+        "gluten-free",
+        "nut-free"
+      ],
+      "prepMinutes": 20,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "eggs",
+          "quantity": 8,
+          "unit": ""
+        },
+        {
+          "name": "zucchini",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "spinach",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "cheddar",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "onion",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "olive oil",
+          "quantity": 1,
+          "unit": "tbsp"
+        },
+        {
+          "name": "milk",
+          "quantity": 50,
+          "unit": "ml"
+        }
+      ],
+      "steps": [
+        "Whisk eggs with milk and seasonings.",
+        "Sauté zucchini, onion, and spinach in an oven-safe pan.",
+        "Pour in eggs, top with cheddar.",
+        "Bake at 180°C for 10 minutes until set."
+      ]
+    },
+    {
+      "id": "beef-tacos",
+      "name": "Beef Taco Night",
+      "category": "dinner",
+      "tags": [
+        "family",
+        "fun",
+        "quick"
+      ],
+      "diet": [
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 25,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "ground beef",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "taco shells",
+          "quantity": 12,
+          "unit": ""
+        },
+        {
+          "name": "taco seasoning",
+          "quantity": 1,
+          "unit": "packet"
+        },
+        {
+          "name": "avocado",
+          "quantity": 2,
+          "unit": ""
+        },
+        {
+          "name": "lime",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "corn",
+          "quantity": 1,
+          "unit": "can"
+        },
+        {
+          "name": "tomato",
+          "quantity": 2,
+          "unit": ""
+        },
+        {
+          "name": "onion",
+          "quantity": 1,
+          "unit": ""
+        }
+      ],
+      "steps": [
+        "Brown ground beef, drain, add taco seasoning with water.",
+        "Warm taco shells in a dry pan.",
+        "Set up a filling bar: corn salsa, pico, mashed avocado with lime."
+      ]
+    },
+    {
+      "id": "coconut-black-beans",
+      "name": "Coconut Rice & Black Beans",
+      "category": "dinner",
+      "tags": [
+        "one-pot",
+        "latin-inspired",
+        "budget"
+      ],
+      "diet": [
+        "vegan",
+        "vegetarian",
+        "gluten-free",
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 30,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "rice",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "coconut milk",
+          "quantity": 400,
+          "unit": "ml"
+        },
+        {
+          "name": "black beans",
+          "quantity": 1,
+          "unit": "can"
+        },
+        {
+          "name": "scallions",
+          "quantity": 1,
+          "unit": "bunch"
+        },
+        {
+          "name": "lime",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "cilantro",
+          "quantity": 1,
+          "unit": "bunch"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 1,
+          "unit": "tbsp"
+        },
+        {
+          "name": "garlic",
+          "quantity": 2,
+          "unit": "cloves"
+        }
+      ],
+      "steps": [
+        "Toast rice briefly, then cook in coconut milk and water.",
+        "Heat black beans with garlic and olive oil.",
+        "Top rice with beans, scallions, cilantro, and a squeeze of lime."
+      ]
+    },
+    {
+      "id": "mediterranean-couscous",
+      "name": "Mediterranean Couscous Bowl",
+      "category": "dinner",
+      "tags": [
+        "no-cook-veg",
+        "budget",
+        "meal-prep"
+      ],
+      "diet": [
+        "vegetarian",
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 20,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "couscous",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "cherry tomatoes",
+          "quantity": 250,
+          "unit": "g"
+        },
+        {
+          "name": "cucumber",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "chickpeas",
+          "quantity": 1,
+          "unit": "can"
+        },
+        {
+          "name": "feta",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 3,
+          "unit": "tbsp"
+        },
+        {
+          "name": "lemon",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "dill",
+          "quantity": 1,
+          "unit": "bunch"
+        }
+      ],
+      "steps": [
+        "Fluff couscous with olive oil and lemon juice.",
+        "Chop tomatoes, cucumber, and dill; rinse chickpeas.",
+        "Combine everything, crumble feta on top.",
+        "Dress with olive oil, lemon, salt, and pepper."
+      ]
+    },
+    {
+      "id": "garlic-butter-steak",
+      "name": "Garlic Butter Steak & Greens",
+      "category": "dinner",
+      "tags": [
+        "quick",
+        "high-protein",
+        "date-night"
+      ],
+      "diet": [
+        "dairy-free",
+        "low-sodium"
+      ],
+      "prepMinutes": 25,
+      "servings": 4,
+      "ingredients": [
+        {
+          "name": "sirloin steak",
+          "quantity": 600,
+          "unit": "g"
+        },
+        {
+          "name": "garlic",
+          "quantity": 4,
+          "unit": "cloves"
+        },
+        {
+          "name": "butter",
+          "quantity": 3,
+          "unit": "tbsp"
+        },
+        {
+          "name": "green beans",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "thyme",
+          "quantity": 1,
+          "unit": "bunch"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 1,
+          "unit": "tbsp"
+        }
+      ],
+      "steps": [
+        "Pat steak dry, season with salt and pepper.",
+        "Sear 3 minutes per side in olive oil.",
+        "Baste with butter, garlic, and thyme for 2 minutes.",
+        "Rest 5 minutes; sauté green beans in the same pan."
+      ]
+    },
+    {
+      "id": "sweet-potato-curry",
+      "name": "Coconut Sweet Potato Curry",
+      "category": "dinner",
+      "tags": [
+        "one-pot",
+        "freezer-friendly"
+      ],
+      "diet": [
+        "vegan",
+        "vegetarian",
+        "gluten-free",
+        "dairy-free",
+        "nut-free"
+      ],
+      "prepMinutes": 35,
+      "servings": 5,
+      "ingredients": [
+        {
+          "name": "sweet potato",
+          "quantity": 800,
+          "unit": "g"
+        },
+        {
+          "name": "coconut milk",
+          "quantity": 400,
+          "unit": "ml"
+        },
+        {
+          "name": "curry paste",
+          "quantity": 3,
+          "unit": "tbsp"
+        },
+        {
+          "name": "onion",
+          "quantity": 1,
+          "unit": ""
+        },
+        {
+          "name": "garlic",
+          "quantity": 3,
+          "unit": "cloves"
+        },
+        {
+          "name": "spinach",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "rice",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "lime",
+          "quantity": 1,
+          "unit": ""
+        }
+      ],
+      "steps": [
+        "Sauté onion and garlic, add curry paste.",
+        "Add cubed sweet potato and coconut milk; simmer 20 minutes.",
+        "Stir in spinach until wilted.",
+        "Serve over rice with a squeeze of lime."
+      ]
+    }
+  ],
+  "cookingSession": null,
+  "routines": [],
+  "updatedAt": "2026-09-13T13:44:22.857Z"
+}
