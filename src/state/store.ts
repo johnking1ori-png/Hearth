@@ -126,6 +126,14 @@ export function todayLocal(): string {
   return toLocalYmd(new Date());
 }
 
+/** Monday of the week that contains `from` (today, when today is a Monday). */
+export function thisMonday(from = new Date()): string {
+  const d = new Date(from);
+  const day = (d.getDay() + 6) % 7; // Monday = 0 … Sunday = 6
+  d.setDate(d.getDate() - day);
+  return toLocalYmd(d);
+}
+
 export function nextMonday(from = new Date()): string {
   const d = new Date(from);
   const day = (d.getDay() + 6) % 7; // Monday = 0 … Sunday = 6

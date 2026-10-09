@@ -1,4 +1,5 @@
 import type { HouseholdState, MealPlan, MealPlanDay, Recipe, WeekDay } from "../shared/types.js";
+import { WEEK_DAYS } from "../shared/types.js";
 import { addDays, dayOfWeekFor, nextMonday, newId } from "../state/store.js";
 import { findRecipe } from "../shared/recipes.js";
 
@@ -19,6 +20,28 @@ function scoreRecipe(r: Recipe, state: HouseholdState, usedNames: Set<string>, i
   return score;
 }
 
+/** Which nights must be plant-based, from the owner's instruction (falls back to Tue/Thu). */
+export function plantDaysFromNote(note?: string): Set<WeekDay> {
+  const fallback = new Set<WeekDay>(["Tuesday", "Thursday"]);
+  if (!note?.trim()) return fallback;
+  if (/(no|without|not|none|free of)[-\s,]*(vegetarian|vegan|meatless|veg\b)|non[-\s]?veg|no meatless/.test(note)) {
+    return new Set<WeekDay>();
+  }
+  if (!/(vegetarian|vegan|meatless|plant[- ]based|veggie)/.test(note)) return fallback;
+
+  const checks: [RegExp, WeekDay][] = [
+    [/\bmondays?\b|\bmon\b/i, "Monday"],
+    [/\btuesdays?\b|\btues?\b|\btue\b/i, "Tuesday"],
+    [/\bwednesdays?\b|\bweds?\b|\bwed\b/i, "Wednesday"],
+    [/\bthursdays?\b|\bthurs?\b|\bthu\b/i, "Thursday"],
+    [/\bfridays?\b|\bfri\b/i, "Friday"],
+    [/\bsaturdays?\b|\bsat\b/i, "Saturday"],
+    [/\bsundays?\b|\bsun\b/i, "Sunday"],
+  ];
+  const found = new Set<WeekDay>(checks.filter(([re]) => re.test(note)).map(([, day]) => day));
+  return found.size ? found : fallback;
+}
+
 export function generateDeterministicMealPlan(state: HouseholdState, weekStart: string, note?: string): MealPlan {
   const members = state.family;
   const hasAllergy = (tag: string) => members.some((m) => m.allergies.map((a) => a.toLowerCase()).includes(tag));
@@ -26,8 +49,8 @@ export function generateDeterministicMealPlan(state: HouseholdState, weekStart: 
   const allergyPeanut = hasAllergy("peanuts") || hasAllergy("nuts") || hasAllergy("nut");
   const alwaysPlantOnly = members.some((m) => m.diet.includes("vegan"));
 
-  const isPlantDay = (day: WeekDay): boolean =>
-    alwaysPlantOnly || day === "Tuesday" || day === "Thursday";
+  const plantDays = alwaysPlantOnly ? new Set<WeekDay>(WEEK_DAYS) : plantDaysFromNote(note);
+  const isPlantDay = (day: WeekDay): boolean => plantDays.has(day);
 
   const usable = (r: Recipe, day: WeekDay): boolean => {
     if (isPlantDay(day) && !r.diet.includes("vegan") && !r.diet.includes("vegetarian")) return false;
@@ -60,7 +83,7 @@ export function generateDeterministicMealPlan(state: HouseholdState, weekStart: 
       dish: pick.name,
       recipeId: pick.id,
       cook: cooks[i % cooks.length],
-      notes: note ? `request: ${note}` : undefined,
+      notes: note && new RegExp(`\\b${dayName}s?\\b`, "i").test(note) ? `request: ${note}` : undefined,
     });
   }
 

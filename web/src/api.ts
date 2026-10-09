@@ -29,7 +29,7 @@ export interface AssistantReply {
   text: string;
   provider: string;
   model: string;
-  toolCalls: ToolCallTrace[];
+  toolCalls: number;
   iterations: number;
   durationMs: number;
 }
@@ -55,6 +55,7 @@ export async function streamChat(
   const decoder = new TextDecoder();
   let buffer = "";
   let done: (ChatEvent & { kind: "done" | "error" }) | null = null;
+  let answer = "";
 
   for (;;) {
     const { done: readerDone, value } = await reader.read();
@@ -66,10 +67,12 @@ export async function streamChat(
       if (!part.startsWith("data: ")) continue;
       const ev = JSON.parse(part.slice(6)) as ChatEvent;
       onEvent(ev);
+      if (ev.type === "assistant" && ev.content) answer = ev.content;
       if (ev.type === "done" || ev.type === "error") done = { kind: ev.type, ...ev };
     }
   }
   if (!done) throw new Error("stream ended without completion event");
+  if (!done.content && answer && done.kind === "done") done.content = answer;
   return done;
 }
 
@@ -84,7 +87,7 @@ export interface Household {
     days: { date: string; dayOfWeek: string; dish: string; recipeId?: string; cook?: string; notes?: string }[];
   } | null;
   shoppingList: { id: string; name: string; quantity: number; unit: string; category: string; source: string; checked: boolean }[];
-  recipes: { id: string; name: string; prepMinutes: number; diet: string[] }[];
+  recipes: { id: string; name: string; prepMinutes: number; diet: string[]; tags?: string[]; category?: string }[];
   cookingSession: {
     id: string;
     dish: string;

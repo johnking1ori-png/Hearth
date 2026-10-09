@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import cors from "cors";
-import { config } from "../config/env.js";
+import { config, resolveSystemPrompt } from "../config/env.js";
 import { HouseholdStore } from "../state/store.js";
 import { createHearthMcpServer } from "./tools.js";
 import { buildAutoProvider } from "../agent/factory.js";
@@ -128,7 +128,14 @@ app.post("/v1/chat", async (req, res) => {
 
   try {
     const provider = buildAutoProvider();
-    const outcome = await runAgentTask({ request: message, provider, mcp: mcpClient, history: [...history], onEvent: sendEvent });
+    const outcome = await runAgentTask({
+      request: message,
+      provider,
+      mcp: mcpClient,
+      history: [...history],
+      onEvent: sendEvent,
+      system: resolveSystemPrompt(),
+    });
 
     history.push({ role: "user", content: message });
     history.push({ role: "assistant", content: outcome.text });
@@ -138,6 +145,7 @@ app.post("/v1/chat", async (req, res) => {
     res.write(
       `data: ${JSON.stringify({
         type: "done",
+        content: outcome.text,
         provider: outcome.provider,
         model: outcome.model,
         durationMs: outcome.durationMs,

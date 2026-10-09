@@ -345,6 +345,18 @@ body {
   font-size: 11.5px;
 }
 
+.row .r-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 100px;
+  background: var(--chip);
+  color: var(--accent2);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  vertical-align: middle;
+}
+
 .row .r-right {
   color: var(--accent2);
   font-family: var(--mono);

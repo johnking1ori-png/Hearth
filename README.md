@@ -22,6 +22,7 @@ endpoint any Alexa+ client would use** — so the runtime *is* the demo.
 | "What do we need to buy?" | Meal plan × pantry ⇒ shopping list diff |
 | "Start tonight's dinner" | Cooking session with ingredient & step checks |
 | "Plan our evening" | Timed routine that reports back through MCP tools |
+| "Suggest a breakfast" / "Plan this week's breakfast" | `recipe.suggest` → 7-day breakfast rotation (dinners stay in the plan) |
 | "Is everyone at home?" / "Who's cooking?" | Live household intents |
 
 A simulated Alexa+ chat web app (`npm run web`) shows a **live agent trace** — every MCP
@@ -31,9 +32,9 @@ tool call the LLM makes, streamed over SSE — alongside a household dashboard.
 
 ```
 Alexa+  ── MCP (Streamable HTTP, 2025-11-25) ──►  /mcp      Hearth server (Express + MCPSDK)
-                                                    ├── 23 tools (mealplan.*, cooking.*,
-        Browser (simulated Alexa+) ◄── SSE ─────────┤      shopping.*, routine.*, family.*, pantry.*)
-        /v1/chat                                    │       └── orchestrate.task ──► MCP Client
+                                                    ├── 25 tools (mealplan.*, cooking.*,
+        Browser (simulated Alexa+) ◄── SSE ─────────┤      shopping.*, routine.*, family.*, pantry.*,
+        /v1/chat                                    │      recipe.*)       └── orchestrate.task ──► MCP Client
         web/ (React + Vite)                         │                                │
                                                     └── /api/household · /health   actual MCP roundtrip
 ```
@@ -111,6 +112,7 @@ npm run demo        # boots the full stack in-process, runs the 4-turn storyline
 | `npm run seed` | Reset `data/household.json` from the example |
 | `npm run demo` | In-process end-to-end smoke test (no browser) |
 | `npm run agent` | CLI REPL that talks to a running server |
+| `npm run test:edge` | 34-case edge/intent battery against a running server |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run web` | Vite dev server for the simulated Alexa+ UI |
 | `npm run web:build` | Build the UI into `web/dist` (served by `npm run dev`) |
@@ -123,7 +125,7 @@ src/
   agent/         Bedrock + local providers, MCP client, agent loop, provider factory
   services/      mealPlanner, shoppingSync, routinePlanner (deterministic domain logic)
   state/         file-backed household store, seed data, date helpers
-  shared/        recipe book (12 recipes), MCP tool schemas
+  shared/        recipe book (17 recipes), MCP tool schemas
 web/             React + Vite "Alexa+" chat UI with live agent trace
 data/            household.json (runtime state) + household.example.json (committed seed)
 ```

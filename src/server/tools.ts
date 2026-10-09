@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { HouseholdStore, nextMonday, newId, upsertShoppingItem, guessCategory, todayLocal } from "../state/store.js";
-import { findRecipe } from "../shared/recipes.js";
-import type { MealPlanDay } from "../shared/types.js";
+import { findRecipe, RECIPES } from "../shared/recipes.js";
+import type { MealPlanDay, Recipe } from "../shared/types.js";
 import { generateDeterministicMealPlan, mealPlanPrompt, parseModelMealPlan } from "../services/mealPlanner.js";
 import { computeShortfalls, mergeShortfalls, summarizeShortfall } from "../services/shoppingSync.js";
 import { planRoutine, routineForDate, resolveRoutineStep, startCookingSession, advanceCooking, recipeForDish } from "../services/routinePlanner.js";
@@ -55,6 +55,28 @@ function registerHousehold(server: McpServer, store: HouseholdStore) {
 }
 
 function registerFamily(server: McpServer, store: HouseholdStore) {
+  server.registerTool(
+    "family.list",
+    {
+      title: "List family members",
+      description:
+        "List who lives in the household with diets, allergies, and favorites. Use for 'who's home / who lives here' questions — presence itself is not tracked.",
+      inputSchema: z.object({}),
+    },
+    async () => {
+      const s = store.getState();
+      const lines = s.family.map((m) => {
+        const diet = m.diet.length ? m.diet.join(", ") : "no diet";
+        const allergies = m.allergies.length ? `; allergies: ${m.allergies.join(", ")}` : "";
+        const favorites = m.favorites.length ? `; favorites: ${m.favorites.join(", ")}` : "";
+        return `- ${m.name} — ${diet}${allergies}${favorites}`;
+      });
+      return textResult(
+        `${s.householdName} — ${s.family.length} members:\n${lines.join("\n")}\n(Presence isn't tracked — these are the household members.)`,
+      );
+    },
+  );
+
   server.registerTool(
     "family.set_preferences",
     {
@@ -211,7 +233,7 @@ function registerRecipes(server: McpServer, store: HouseholdStore) {
     },
     async () => {
       const s = store.getState();
-      const lines = s.recipes.map((r) => `- ${r.name} (${r.prepMinutes}m, diet: ${r.diet.join("/") || "none"})`);
+      const lines = s.recipes.map((r) => recipeLine(r));
       return textResult(`${s.recipes.length} recipes in the library:\n${lines.join("\n")}`);
     },
   );
@@ -231,12 +253,55 @@ function registerRecipes(server: McpServer, store: HouseholdStore) {
       const hits = s.recipes.filter(
         (r) =>
           r.name.toLowerCase().includes(q) ||
+          r.category.toLowerCase().includes(q) ||
           r.tags.some((t) => t.toLowerCase().includes(q)) ||
           r.diet.some((d) => d.toLowerCase().includes(q)) ||
           r.ingredients.some((i) => i.name.toLowerCase().includes(q)),
       );
       if (!hits.length) return textResult(`No recipes match "${q}". Try recipe.list to browse.`);
-      return textResult(hits.map((r) => `- ${r.name} (${r.prepMinutes}m, diet: ${r.diet.join("/") || "none"})`).join("\n"));
+      return textResult(hits.map((r) => recipeLine(r)).join("\n"));
+    },
+  );
+
+  server.registerTool(
+    "recipe.suggest",
+    {
+      title: "Suggest recipes",
+      description:
+        "Suggest recipes for a moment of the day: breakfast, lunch, dinner, a snack, or something light. Read-only — does not touch the weekly meal plan.",
+      inputSchema: z.object({
+        meal: z
+          .string()
+          .describe("Meal moment: 'breakfast', 'lunch', 'dinner', 'snack', or 'light' (light = 20 min or less)"),
+      }),
+    },
+    async (args) => {
+      const meal = ((args as { meal: string }).meal || "any").toLowerCase();
+      const s = store.getState();
+      const brunch = s.recipes.filter((r) => r.category === "brunch");
+      const pick =
+        meal.includes("breakfast") || meal.includes("brunch") || meal.includes("morning")
+          ? brunch
+          : meal.includes("lunch")
+            ? s.recipes.filter(
+                (r) =>
+                  r.category !== "brunch" &&
+                  r.prepMinutes <= 30 &&
+                  !r.tags.some((t) => /date-night|oven|batch-cook|freezer-friendly/.test(t)),
+              )
+            : meal.includes("snack")
+              ? s.recipes.filter((r) => r.prepMinutes <= 15)
+              : meal.includes("light")
+                ? s.recipes.filter((r) => r.prepMinutes <= 20)
+                : meal.includes("dinner")
+                  ? s.recipes.filter((r) => r.category === "dinner")
+                  : s.recipes;
+      const hits = [...pick].sort((a, b) => a.prepMinutes - b.prepMinutes || a.name.localeCompare(b.name));
+      if (!hits.length) {
+        return textResult(`Nothing in the library fits "${meal}" yet — try recipe.list to browse everything.`);
+      }
+      const head = meal.includes("light") ? `${hits.length} light options (20 min or less)` : `${hits.length} ${meal} options`;
+      return textResult(`${head}:\n${hits.map(recipeLine).join("\n")}`);
     },
   );
 
@@ -437,8 +502,24 @@ function registerCooking(server: McpServer, store: HouseholdStore) {
       store.update((draft) => {
         draft.cookingSession = session;
       });
+      // Ingredient check: pantry vs. the recipe, and whether the gaps are already shopping-listed.
+      let pantryNote = "";
+      if (recipe) {
+        const missing = recipe.ingredients.filter(
+          (i) => !s.pantry.some((p) => p.name.trim().toLowerCase() === i.name.trim().toLowerCase()),
+        );
+        if (missing.length) {
+          const missingNames = missing.map((m) => m.name.trim().toLowerCase());
+          const listed = s.shoppingList.filter((i) => missingNames.includes(i.name.trim().toLowerCase())).length;
+          pantryNote = `\n\nPantry check \u2014 not on hand: ${missing
+            .map((m) => `${m.name} (${m.quantity}${m.unit ? " " + m.unit : ""})`)
+            .join(", ")}.${listed ? ` ${listed} already on the shopping list.` : " Add them with \u201cadd … to the shopping list\u201d."}`;
+        } else {
+          pantryNote = "\n\nPantry check \u2014 you have everything this recipe needs.";
+        }
+      }
       return textResult(
-        `Cooking session started for "${session.dish}" (${session.steps.length} steps).\n\n${session.steps.map((st) => `${st.stepNumber}. ${st.instruction}${st.timerMinutes ? ` (timer: ${st.timerMinutes} min)` : ""}`).join("\n")}`,
+        `Cooking session started for "${session.dish}" (${session.steps.length} steps).${pantryNote}\n\n${session.steps.map((st) => `${st.stepNumber}. ${st.instruction}${st.timerMinutes ? ` (timer: ${st.timerMinutes} min)` : ""}`).join("\n")}`,
       );
     },
   );
@@ -499,13 +580,24 @@ function registerRoutine(server: McpServer, store: HouseholdStore) {
       const dateStr = a.date ?? todayLocal();
       let routineTextOut = "";
       store.update((s) => {
-        const day = s.mealPlan?.days.find((d) => d.date === dateStr);
+        const exact = s.mealPlan?.days.find((d) => d.date === dateStr);
+        const upcoming = s.mealPlan?.days
+          .filter((d) => d.date > dateStr)
+          .sort((x, y) => x.date.localeCompare(y.date))[0];
+        const day = exact ?? upcoming;
         const dish = day?.dish ?? "tonight's dinner";
-        const recipe = dish ? recipeForDish(s, dish) : undefined;
+        const recipe = recipeForDish(s, dish);
         const routine = planRoutine(s, dateStr, { date: dateStr, dish, prepMinutes: recipe?.prepMinutes ?? 35 });
         s.routines = s.routines.filter((r) => r.date !== dateStr);
         s.routines.push(routine);
         routineTextOut = routineToText(routine);
+        if (!s.mealPlan) {
+          routineTextOut = `No meal plan yet, so this is built around "tonight's dinner" — ask me to plan the week to pin the dish.\n\n${routineTextOut}`;
+        } else if (!exact && day) {
+          routineTextOut = `Nothing is on the plan for ${dateStr}, so this is built around ${day.dish} (planned for ${day.date}).\n\n${routineTextOut}`;
+        } else if (!exact) {
+          routineTextOut = `Nothing is on the plan for ${dateStr} — ask me to plan dinner for that night.\n\n${routineTextOut}`;
+        }
       });
       return textResult(`Evening routine for ${dateStr} is set.\n\n${routineTextOut}`);
     },
@@ -575,10 +667,60 @@ function registerOrchestrate(server: McpServer, store: HouseholdStore) {
   );
 }
 
+const FISH_WORDS = /\b(salmon|shrimp|prawn|tuna|cod|tilapia|seafood|scallop|fish)\b/i;
+const MEAT_WORDS = /\b(beef|chicken|pork|lamb|turkey|bacon|steak|sausage|duck|meat)\b/i;
+
+function recipeForDay(d: MealPlanDay): Recipe | undefined {
+  return (
+    findRecipe(d.recipeId) ??
+    RECIPES.find((r) => r.name.toLowerCase() === d.dish.toLowerCase())
+  );
+}
+
+function mealType(r: Recipe): string {
+  if (r.diet.includes("vegan")) return "vegan";
+  if (r.diet.includes("vegetarian")) return "vegetarian";
+  if (r.diet.includes("pescatarian")) return "fish";
+  const hay = `${r.name} ${r.tags.join(" ")}`;
+  if (FISH_WORDS.test(hay)) return "fish";
+  if (MEAT_WORDS.test(hay)) return "meat";
+  return r.category === "dinner" ? "other" : r.category;
+}
+
+function nightLabels(d: MealPlanDay): string {
+  const rec = recipeForDay(d);
+  if (!rec) return "";
+  const bits = [mealType(rec)];
+  if (rec.tags[0]) bits.push(rec.tags[0]);
+  bits.push(`${rec.prepMinutes} min`);
+  return bits.join(" · ");
+}
+
+function recipeLine(r: Recipe): string {
+  const bits = [mealType(r)];
+  if (r.tags[0]) bits.push(r.tags[0]);
+  bits.push(`${r.prepMinutes} min`);
+  return `- ${r.name} [${bits.join(" · ")}]`;
+}
+
 export function planToText(plan: { days: MealPlanDay[] }): string {
-  return plan.days
-    .map((d) => `${d.dayOfWeek} ${d.date}: ${d.dish}${d.cook ? ` — cooked by ${d.cook}` : ""}${d.notes ? ` (${d.notes})` : ""}`)
-    .join("\n");
+  if (!plan.days.length) return "";
+  const order = ["vegan", "vegetarian", "fish", "meat", "other"];
+  const groups = new Map<string, string[]>();
+  for (const d of plan.days) {
+    const rec = recipeForDay(d);
+    const type = rec ? mealType(rec) : "other";
+    groups.set(type, [...(groups.get(type) ?? []), d.dayOfWeek.slice(0, 3)]);
+  }
+  const mix = [...groups.entries()]
+    .sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
+    .map(([type, days]) => `${type} — ${days.join(", ")}`)
+    .join(" · ");
+  const lines = plan.days.map((d) => {
+    const labels = nightLabels(d);
+    return `${d.dayOfWeek} ${d.date}: ${d.dish}${d.cook ? ` — cooked by ${d.cook}` : ""}${d.notes ? ` (${d.notes})` : ""}${labels ? ` [${labels}]` : ""}`;
+  });
+  return `${lines.join("\n")}\nWeek mix: ${mix}`;
 }
 
 function routineToText(routine: {

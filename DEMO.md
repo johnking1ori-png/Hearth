@@ -12,7 +12,7 @@ narration** — the point is what Alexa+ does *for* the family; the live trace i
 
 - "Introducing **Hearth** — an MCP server for Alexa+ that runs a household: meal planning,
   shopping, cooking, and evening routines from a single sentence."
-- "Behind the scenes, Hearth advertises 23 MCP tools to Alexa's agent and executes the
+- "Behind the scenes, Hearth advertises 25 MCP tools to Alexa's agent and executes the
   plan *live through the same MCP endpoint*. You can watch every tool call stream in."
 
 ---
@@ -45,7 +45,7 @@ narration** — the point is what Alexa+ does *for* the family; the live trace i
 
 - Cooking session opens with the correct dish, timers, and step-by-step checks
   (ingredients, kitchen, pan hot, etc.).
-- Camera highlight: `cooking.start_session` + `cooking.check_step`.
+- Camera highlight: `cooking.start` (with a pantry/ingredient check) + `cooking.advance`.
 
 ---
 
@@ -55,8 +55,8 @@ narration** — the point is what Alexa+ does *for* the family; the live trace i
 
 - Nightly routine generated (start 17:55 → prep → cook → temp check → serve 19:00 →
   clear up), driven by the meal plan.
-- Camera highlight: `routine.plan_evening` trace; plus `family.status` showing the
-  household dashboard.
+- Camera highlight: `routine.plan_evening` trace; plus `household.get_status` refreshing
+  the household dashboard.
 
 ---
 

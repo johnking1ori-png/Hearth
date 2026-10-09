@@ -35,15 +35,32 @@ export function createMCPClient(baseUrl: string): HearthMCPClient {
   }
 
   async function callTool(name: string, args: Record<string, unknown>): Promise<{ content: string; isError: boolean }> {
-    await connect();
-    const res = await client!.callTool({ name, arguments: args });
-    const parts: string[] = [];
-    for (const item of (res.content as unknown as { type?: string; text?: string; uri?: string }[] | undefined) ?? []) {
-      if (item.type === "text" && typeof item.text === "string") parts.push(item.text);
-      else if (item.type === "resource" && typeof item.uri === "string") parts.push(item.uri);
-      else if (typeof item.text === "string") parts.push(item.text);
+    const attempt = async () => {
+      await connect();
+      const res = await client!.callTool({ name, arguments: args });
+      const parts: string[] = [];
+      for (const item of (res.content as unknown as { type?: string; text?: string; uri?: string }[] | undefined) ?? []) {
+        if (item.type === "text" && typeof item.text === "string") parts.push(item.text);
+        else if (item.type === "resource" && typeof item.uri === "string") parts.push(item.uri);
+        else if (typeof item.text === "string") parts.push(item.text);
+      }
+      return { content: parts.join("\n") || "(no output)", isError: res.isError === true };
+    };
+    try {
+      return await attempt();
+    } catch {
+      // A dev-server restart (or session eviction) kills the Streamable HTTP
+      // session — wait for the server to settle, reconnect from scratch, retry once.
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      try {
+        await client?.close();
+      } catch {
+        /* already dead */
+      }
+      client = null;
+      transport = null;
+      return await attempt();
     }
-    return { content: parts.join("\n") || "(no output)", isError: res.isError === true };
   }
 
   return {

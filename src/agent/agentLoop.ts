@@ -29,8 +29,15 @@ Ground every answer in the real household state by calling the MCP tools provide
 - "Plan our week" = check what's planned, generate a meal plan respecting preferences/allergies, then sync the shopping list.
 - "What's for dinner / what do I need" = read the meal plan, then diff against pantry.
 - "Start the evening" = plan the evening routine anchored to the dish scheduled for tonight.
+- "Suggest a breakfast / lunch / something light" = recipe.suggest with that meal moment. Breakfasts are suggestions only — they do not go into the dinner meal plan.
 When you're asked a question, use household.get_status and/or the specific list tool before answering so your answer reflects reality.
-Never invent pantry items, dishes, or times. After completing the workflow, write a concise, friendly summary with the concrete outcomes (meal plan, items to buy, routine times, next steps). Do not mention that you are a deterministic fallback.`;
+Never invent pantry items, dishes, or times. After completing the workflow, write a concise, friendly summary with the concrete outcomes (meal plan, items to buy, routine times, next steps). Do not mention that you are a deterministic fallback.
+
+People phrase things casually and imperfectly — "sort dinner", "what do we owe the store", "get the evening ready", typos and all. Map any reasonable phrasing onto the closest workflow instead of refusing or asking for a rewording. Rules for free-form input:
+- Pick the most plausible interpretation and say, in one short line, what you assumed (e.g. "Assuming you mean this week's dinners…"), then do it.
+- If a request names a day or "tonight", plan the week that contains that day; otherwise plan next week.
+- If two readings are both plausible and cheap, choose the one that leaves the household in a better state (planning beats reporting).
+- Only ask a clarifying question when the request is genuinely unrelated to the household (meal plans, pantry, shopping, cooking, routine, family).`;
 
 const MAX_ITERATIONS = 6;
 
@@ -86,6 +93,7 @@ export async function runAgentTask(opts: {
     }
 
     const toolResults: ToolResultMessage[] = [];
+    let transportError = false;
     for (const call of result.toolCalls) {
       totalToolCalls += 1;
       const t0 = Date.now();
@@ -97,6 +105,9 @@ export async function runAgentTask(opts: {
         content = res.content;
         isError = res.isError;
       } catch (err) {
+        // Only a thrown call means the tools are unreachable — a tool that
+        // *returns* isError is a domain answer ("no meal plan yet"), not an outage.
+        transportError = true;
         isError = true;
         content = err instanceof Error ? err.message : String(err);
       }
@@ -107,7 +118,7 @@ export async function runAgentTask(opts: {
     messages.push({ role: "assistant", content: result.text ?? "", toolCalls: result.toolCalls });
     messages.push({ role: "user", content: "", toolResults });
 
-    if (toolResults.every((r) => r.isError)) {
+    if (transportError && toolResults.every((r) => r.isError)) {
       emit({
         type: "assistant",
         content: "I ran into an error while trying to reach the household tools. Please try again.",

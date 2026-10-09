@@ -10,8 +10,10 @@
   "scripts": {
     "dev": "tsx watch src/server/index.ts",
     "start": "tsx src/server/index.ts",
-    "demo": "tsx src/scripts/seed-demo.ts",
+    "seed": "tsx src/scripts/seed-demo.ts",
+    "demo": "tsx src/scripts/demo-run.ts",
     "agent": "tsx src/scripts/cli-agent.ts",
+    "test:edge": "tsx src/scripts/edge-cases.ts",
     "typecheck": "tsc --noEmit",
     "web": "npm --prefix web run dev",
     "web:build": "npm --prefix web run build",
