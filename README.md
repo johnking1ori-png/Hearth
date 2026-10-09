@@ -96,6 +96,10 @@ export HEARTH_LLM_PROVIDER=bedrock
 - Default model: `us.anthropic.claude-haiku-4-5-20251001-v1:0` (inference profile) —
   override with `HEARTH_BEDROCK_MODEL`.
 - `GET /health` reports whether Bedrock is configured (`"bedrock": true`).
+- Settings can live in a `.env` file at the repo root (loaded automatically); `.env.example`
+  documents every key. `isBedrockConfigured()` looks for `AWS_ACCESS_KEY_ID`,
+  `AWS_SECRET_ACCESS_KEY`, or `AWS_PROFILE` — so a plain `aws configure` default profile needs
+  `AWS_PROFILE=default` set for auto-detection to pick Bedrock.
 
 ### Smoke test
 
